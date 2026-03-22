@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  pg-master:
+    image: postgres:15
+    container_name: pg-master
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      REPLICATION_USER: ${REPLICATION_USER}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_master:/var/lib/postgresql/data
+      - ./init/00_init_replication.sh:/docker-entrypoint-initdb.d/00_init_replication.sh
+      - ./init/01_user_service_db.sql:/docker-entrypoint-initdb.d/01_user_service_db.sql
+      - ./init/02_order_service_db.sql:/docker-entrypoint-initdb.d/02_order_service_db.sql
+      - ./init/03_logistics_service_db.sql:/docker-entrypoint-initdb.d/03_logistics_service_db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pg-network
+
+  pg-replica:
+    image: postgres:15
+    container_name: pg-replica
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MASTER_HOST: ${MASTER_HOST}
+      MASTER_PORT: ${MASTER_PORT}
+      REPLICATION_USER: ${REPLICATION_USER}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_replica:/var/lib/postgresql/data
+      - ./replica/init_replica.sh:/init_replica.sh
+    depends_on:
+      pg-master:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/init_replica.sh"]
+    command: ["postgres"]
+    networks:
+      - pg-network
+
+volumes:
+  pgdata_master:
+  pgdata_replica:
+
+networks:
+  pg-network:
+    driver: bridge
