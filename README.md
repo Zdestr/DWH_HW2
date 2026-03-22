@@ -1,9 +1,7 @@
-
-```markdown
 # Домашнее задание 2 — DWH на Data Vault 2.0 + Apache Doris
 
 ## Состав команды
-- [Ваше имя]
+- Тугов Евгений
 
 ## Что сделано
 - [x] Выбрана и обоснована архитектура Data Vault 2.0
@@ -321,4 +319,3 @@ SELECT * FROM sat_user_details ORDER BY created_at DESC LIMIT 3;
 - [Debezium PostgreSQL Connector](https://debezium.io/documentation/reference/connectors/postgresql.html)
 - [Apache Doris Docker](https://doris.apache.org/docs/install/cluster-deployment/run-docker-cluster)
 - [kafka-python](https://kafka-python.readthedocs.io/)
-```
