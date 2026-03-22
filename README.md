@@ -31,6 +31,7 @@
 - Значительно быстрее PostgreSQL на аналитических запросах (OLAP)
 
 ## Архитектура
+```
 
 ┌─────────────────────────────────────────────────────────────────┐
 │                         SOURCES                                 │
@@ -85,9 +86,9 @@
 │             sat_warehouse_details, sat_shipment_details,        │
 │             sat_order_item_details, sat_pickup_point_details    │
 └─────────────────────────────────────────────────────────────────┘
-
+```
 ## Структура проекта
-
+```
 hw2/
 ├── docker-compose.yml
 ├── .env
@@ -160,7 +161,7 @@ hw2/
         ├── sat_shipment_details.yaml
         ├── sat_order_item_details.yaml
         └── sat_pickup_point_details.yaml
-
+```
 ## Как запустить
 
 ### Требования
@@ -169,11 +170,12 @@ hw2/
 - RAM >= 8GB (Apache Doris требует минимум 4GB)
 
 ### Запуск
-
+```
 git clone <your-repo-url>
 cd hw2
-
+```
 # Запускаем весь стек
+```
 docker-compose up -d
 
 # Ждём ~2 минуты пока Doris FE/BE инициализируются
